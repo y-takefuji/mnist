@@ -13,12 +13,17 @@ Spearman 0.7699 ± 0.0024
 Kendall	0.7177 ± 0.0020
 NMF	0.4257 ± 0.0043
 </pre>
-
-
-
+<pre>
 mnisttest.py:
-
+Ranking of feature selection methods by accuracy:
+1. Mutual Information (with RF): 0.8445 ± 0.0023
+2. Transfer Entropy (with RF): 0.8074 ± 0.0020
+3. LASSO (with LASSO classifier): 0.7299 ± 0.0024
+</pre>
+<pre>
 FA-lasso-log-pca.py:
+
+</pre>
 
 Traditional PCA underperforms compared to alternative feature selection methods when applied to the MNIST dataset (70,000 samples, 784 features). 
 When selecting the top 30 features from the original 784, Feature Agglomeration (FA) significantly outperforms all other methods with a 5-fold cross-validation accuracy of 0.9287 ± 0.0007 using Random Forest classification. 
