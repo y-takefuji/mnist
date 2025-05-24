@@ -1,5 +1,20 @@
 # mnist
+<pre>
 mnist.py:
+Method	5-fold CV Accuracy
+Feature Agglomeration	0.9287 ± 0.0007
+ICA	0.8700 ± 0.0013
+HVGS	0.8432 ± 0.0035
+PCA	0.8356 ± 0.0036
+t-SNE	0.8094 ± 0.0007
+UMAP	0.8029 ± 0.0027
+LLE	0.7910 ± 0.0026
+Spearman	0.7699 ± 0.0024
+Kendall	0.7177 ± 0.0020
+NMF	0.4257 ± 0.0043
+</pre>
+
+
 
 mnisttest.py:
 
