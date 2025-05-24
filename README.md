@@ -24,6 +24,13 @@ FA-lasso-log-pca.py:
 2. LASSO features + LASSO classifier: 0.7203 ± 0.0015
 3. LogReg features + LogReg: 0.6911 ± 0.0025
 4. PCA features + Random Forest: 0.6164 ± 0.0025
+
+temulapca.py
+Ranking of feature selection methods by accuracy:
+1. Transfer Entropy (with RF): 0.8657 ± 0.0016
+2. Mutual Information (with RF): 0.8444 ± 0.0015
+3. LASSO (with LASSO classifier): 0.7299 ± 0.0040
+4. PCA (with RF): 0.6439 ± 0.0018
 </pre>
 
 Traditional PCA underperforms compared to alternative feature selection methods when applied to the MNIST dataset (70,000 samples, 784 features). 
