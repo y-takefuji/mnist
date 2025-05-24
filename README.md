@@ -12,17 +12,18 @@ LLE	0.7910 ± 0.0026
 Spearman 0.7699 ± 0.0024
 Kendall	0.7177 ± 0.0020
 NMF	0.4257 ± 0.0043
-</pre>
-<pre>
+
 mnisttest.py:
 Ranking of feature selection methods by accuracy:
 1. Mutual Information (with RF): 0.8445 ± 0.0023
 2. Transfer Entropy (with RF): 0.8074 ± 0.0020
 3. LASSO (with LASSO classifier): 0.7299 ± 0.0024
-</pre>
-<pre>
-FA-lasso-log-pca.py:
 
+FA-lasso-log-pca.py:
+1. Feature Agglomeration + Random Forest: 0.9279 ± 0.0020
+2. LASSO features + LASSO classifier: 0.7203 ± 0.0015
+3. LogReg features + LogReg: 0.6911 ± 0.0025
+4. PCA features + Random Forest: 0.6164 ± 0.0025
 </pre>
 
 Traditional PCA underperforms compared to alternative feature selection methods when applied to the MNIST dataset (70,000 samples, 784 features). 
