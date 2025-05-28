@@ -141,19 +141,14 @@ for i in range(min(5, num_features)):
 print("\nPerforming cross-validation...")
 cv = KFold(n_splits=5, shuffle=True, random_state=42)
 
-# Linear classifier (LogisticRegression) for LASSO-selected features
-print(f"\nCross-validating LASSO-selected features with Linear Classifier...")
-linear_clf = LogisticRegression(max_iter=1000, random_state=42)
-scores_lasso_linear = cross_val_score(linear_clf, X_lasso_top, y, cv=cv, scoring='accuracy')
-print(f"LASSO top {num_features} features (with Linear Classifier) - CV Accuracy: {scores_lasso_linear.mean():.4f} ± {scores_lasso_linear.std():.4f}")
+# LASSO classifier (LogisticRegression with L1 penalty) for LASSO-selected features
+print(f"\nCross-validating LASSO-selected features with LASSO classifier...")
+lasso_clf = LogisticRegression(penalty='l1', solver='liblinear', C=1.0, random_state=42)
+scores_lasso = cross_val_score(lasso_clf, X_lasso_top, y, cv=cv, scoring='accuracy')
+print(f"LASSO top {num_features} features (with LASSO classifier) - CV Accuracy: {scores_lasso.mean():.4f} ± {scores_lasso.std():.4f}")
 
-# Random Forest for all feature selection methods
+# Random Forest for MI and TE features
 rf = RandomForestClassifier(n_estimators=100, random_state=42)
-
-# Evaluate LASSO-selected features with Random Forest
-print(f"\nCross-validating LASSO-selected features with Random Forest...")
-scores_lasso_rf = cross_val_score(rf, X_lasso_top, y, cv=cv, scoring='accuracy')
-print(f"LASSO top {num_features} features (with RF) - CV Accuracy: {scores_lasso_rf.mean():.4f} ± {scores_lasso_rf.std():.4f}")
 
 # Evaluate Mutual Information selected features with Random Forest
 print(f"\nCross-validating Mutual Information-selected features with Random Forest...")
@@ -168,8 +163,7 @@ print(f"TE top {num_features} features (with RF) - CV Accuracy: {scores_te_rf.me
 # Create a summary of results
 print("\n=== SUMMARY OF RESULTS ===")
 results = [
-    ("LASSO (with Linear Classifier)", scores_lasso_linear.mean(), scores_lasso_linear.std()),
-    ("LASSO (with Random Forest)", scores_lasso_rf.mean(), scores_lasso_rf.std()),
+    ("LASSO (with LASSO classifier)", scores_lasso.mean(), scores_lasso.std()),
     ("Mutual Information (with Random Forest)", scores_mi_rf.mean(), scores_mi_rf.std()),
     ("Transfer Entropy (with Random Forest)", scores_te_rf.mean(), scores_te_rf.std())
 ]
