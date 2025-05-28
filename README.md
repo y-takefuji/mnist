@@ -31,6 +31,12 @@ Ranking of feature selection methods by accuracy:
 2. Mutual Information (with RF): 0.8444 ± 0.0015
 3. LASSO (with LASSO classifier): 0.7299 ± 0.0040
 4. PCA (with RF): 0.6439 ± 0.0018
+
+lasso-mi-te.py
+LASSO top 30 features (with Linear Classifier) - CV Accuracy: 0.2133 ± 0.0032
+MI top 30 features (with RF) - CV Accuracy: 0.8444 ± 0.0026
+TE top 30 features (with RF) - CV Accuracy: 0.8341 ± 0.0038
+  
 </pre>
 
 Traditional PCA underperforms compared to alternative feature selection methods when applied to the MNIST dataset (70,000 samples, 784 features). 
