@@ -33,9 +33,10 @@ Ranking of feature selection methods by accuracy:
 4. PCA (with RF): 0.6439 ± 0.0018
 
 lasso-mi-te.py
-LASSO top 30 features (with Linear Classifier) - CV Accuracy: 0.2133 ± 0.0032
-MI top 30 features (with RF) - CV Accuracy: 0.8444 ± 0.0026
-TE top 30 features (with RF) - CV Accuracy: 0.8341 ± 0.0038
+Ranking of methods by cross-validation accuracy:
+1. Transfer Entropy (with Random Forest): 0.8459 ± 0.0027
+2. Mutual Information (with Random Forest): 0.8444 ± 0.0026
+3. LASSO (with LASSO classifier): 0.2152 ± 0.0037
   
 </pre>
 
