@@ -37,7 +37,11 @@ Ranking of methods by cross-validation accuracy:
 1. Transfer Entropy (with Random Forest): 0.8459 ± 0.0027
 2. Mutual Information (with Random Forest): 0.8444 ± 0.0026
 3. LASSO (with LASSO classifier): 0.2152 ± 0.0037
-  
+
+pca-hvgs-fa.py
+Feature Agglomeration: 0.9139 (±0.0047)
+PCA: 0.8973 (±0.0049)
+HVGs: 0.8421 (±0.0055)
 </pre>
 
 Traditional PCA underperforms compared to alternative feature selection methods when applied to the MNIST dataset (70,000 samples, 784 features). 
