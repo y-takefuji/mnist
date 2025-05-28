@@ -42,6 +42,7 @@ pca-hvgs-fa.py
 Feature Agglomeration: 0.9139 (±0.0047)
 PCA: 0.8973 (±0.0049)
 HVGs: 0.8421 (±0.0055)
+  
 </pre>
 
 Traditional PCA underperforms compared to alternative feature selection methods when applied to the MNIST dataset (70,000 samples, 784 features). 
