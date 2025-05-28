@@ -17,7 +17,7 @@ mnisttest.py:
 Ranking of feature selection methods by accuracy:
 1. Mutual Information (with RF): 0.8445 ± 0.0023
 2. Transfer Entropy (with RF): 0.8074 ± 0.0020
-3. LASSO (with LASSO classifier): 0.7299 ± 0.0024
+3. LASSO (with LASSO classifier) with scaling and transform: 0.7299 ± 0.0024
 
 FA-lasso-log-pca.py:
 1. Feature Agglomeration + Random Forest: 0.9279 ± 0.0020
