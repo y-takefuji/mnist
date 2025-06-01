@@ -1,5 +1,9 @@
 # mnist
 <pre>
+mnisttransfpca.py
+(PCA without scaling) - Accuracy: 0.8364 (±0.0023)
+(PCA with scaling) - Accuracy: 0.6402 (±0.0037)
+
 mnist.py:
 Method	5-fold CV Accuracy
 Feature Agglomeration	0.9287 ± 0.0007
