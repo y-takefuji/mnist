@@ -26,9 +26,16 @@ def load_mnist_data():
     
     return X, y
 
-# Method 1: Feature selection using PCA without scaling
+# Highly Variable Gene Selection function
+def select_hvgs(X, n_features=30):
+    """Select the top n_features with highest variance"""
+    variances = np.var(X, axis=0)
+    top_idx = np.argsort(variances)[::-1][:n_features]
+    return X[:, top_idx], top_idx
+
+# Method 1: PCA without scaling (NO TRANSFORM - feature selection only)
 def method_pca_without_scaling(X, y):
-    print("\nMethod 1: Feature selection using PCA without scaling")
+    print("\nMethod 1: PCA without scaling (NO TRANSFORM - feature selection only)")
     start_time = time.time()
     
     # Apply PCA without scaling to identify important features
@@ -73,9 +80,9 @@ def method_pca_without_scaling(X, y):
     
     return scores.mean(), scores.std(), top_indices, X_reduced
 
-# Method 2: Feature selection using PCA with scaling
+# Method 2: PCA with scaling (WITH TRANSFORM)
 def method_pca_with_scaling(X, y):
-    print("\nMethod 2: Feature selection using PCA with scaling")
+    print("\nMethod 2: PCA with scaling (WITH TRANSFORM)")
     start_time = time.time()
     
     # Scale the data
@@ -83,89 +90,81 @@ def method_pca_with_scaling(X, y):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     
-    # Apply PCA to identify important features
-    print("Applying PCA to scaled data to identify important features...")
+    # Apply PCA to transform data
+    print("Applying PCA to scaled data to transform data...")
     pca = PCA(n_components=30)
-    pca.fit(X_scaled)
+    X_transformed = pca.fit_transform(X_scaled)
     
     # Get explained variance ratio
     explained_variance = pca.explained_variance_ratio_
     cumulative_variance = explained_variance.cumsum()
     print(f"Explained variance by 30 components: {cumulative_variance[-1]:.4f}")
     
-    # Identify most important original features based on PCA loadings
-    feature_importance = np.zeros(X.shape[1])
-    for i in range(30):
-        # Sum the absolute loadings across all components
-        feature_importance += np.abs(pca.components_[i])
+    # Display information about the components
+    print("\nPCA component information:")
+    for i in range(5):  # Show info for first 5 components
+        print(f"  Component {i+1}: Explains {explained_variance[i]:.4f} of variance")
     
-    # Get top 30 features
-    top_indices = np.argsort(-feature_importance)[:30]
-    
-    # Create reduced dataset with selected features
-    X_reduced = X[:, top_indices]  # Using original X, not X_scaled
-    
-    # Display pixel positions of top features
-    print("\nTop 30 features selected (pixel positions):")
-    for i, idx in enumerate(top_indices[:10]):  # Show first 10
-        row = idx // 28
-        col = idx % 28
-        print(f"  Feature {i+1}: Pixel ({row}, {col})")
-    
-    # Now cross-validate on the reduced dataset
-    print("\nPerforming cross-validation on reduced dataset...")
+    # Now cross-validate on the transformed dataset
+    print("\nPerforming cross-validation on transformed dataset...")
     rf = RandomForestClassifier(random_state=42, n_estimators=100)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-    scores = cross_val_score(rf, X_reduced, y, cv=cv, scoring='accuracy')
+    scores = cross_val_score(rf, X_transformed, y, cv=cv, scoring='accuracy')
     
     print(f"Cross-validation scores: {scores}")
     print(f"Mean accuracy: {scores.mean():.4f}")
     print(f"Standard deviation: {scores.std():.4f}")
     print(f"Method execution took {time.time() - start_time:.2f} seconds")
     
-    return scores.mean(), scores.std(), top_indices, X_reduced
+    return scores.mean(), scores.std(), None, X_transformed
 
 # Method 3: Feature selection using ICA
 def method_ica(X, y):
     print("\nMethod 3: Feature selection using ICA")
     start_time = time.time()
     
+    num_features = 30
+    
     # Apply ICA to identify important features
     print("Applying ICA to identify important features...")
     ica = FastICA(n_components=30, random_state=42)
     ica.fit(X)
     
-    # Identify most important original features based on ICA loadings
-    feature_importance = np.zeros(X.shape[1])
-    for i in range(30):
-        # Sum the absolute loadings across all components
-        feature_importance += np.abs(ica.components_[i])
+    # Sum of absolute values of ICA components for each feature
+    ica_importance = np.sum(np.abs(ica.components_), axis=0)
+    top_ica_indices = np.argsort(-ica_importance)[:num_features]
+    X_ica_top = X[:, top_ica_indices]
+    print(f"ICA top features dataset shape: {X_ica_top.shape}")
     
-    # Get top 30 features
-    top_indices = np.argsort(-feature_importance)[:30]
+    # Display top 5 features from ICA
+    print("\nTop 5 ICA most influential original features:")
+    for i in range(5):
+        feature_idx = top_ica_indices[i]
+        importance = ica_importance[feature_idx]
+        pixel_row = feature_idx // 28
+        pixel_col = feature_idx % 28
+        print(f"Feature {feature_idx}: Importance = {importance:.4f}, Position = ({pixel_row}, {pixel_col})")
     
-    # Create reduced dataset with selected features
-    X_reduced = X[:, top_indices]
-    
-    # Display pixel positions of top features
+    # Show all top features
     print("\nTop 30 features selected (pixel positions):")
-    for i, idx in enumerate(top_indices[:10]):  # Show first 10
+    for i, idx in enumerate(top_ica_indices[:10]):  # Show first 10
         row = idx // 28
         col = idx % 28
-        print(f"  Feature {i+1}: Pixel ({row}, {col})")
+        importance = ica_importance[idx]
+        print(f"  Feature {i+1}: Pixel ({row}, {col}), Importance = {importance:.4f}")
     
     # Now cross-validate on the reduced dataset
     print("\nPerforming cross-validation on reduced dataset...")
     rf = RandomForestClassifier(random_state=42, n_estimators=100)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-    scores = cross_val_score(rf, X_reduced, y, cv=cv, scoring='accuracy')
+    scores = cross_val_score(rf, X_ica_top, y, cv=cv, scoring='accuracy')
     
     print(f"Cross-validation scores: {scores}")
     print(f"Mean accuracy: {scores.mean():.4f}")
     print(f"Standard deviation: {scores.std():.4f}")
     print(f"Method execution took {time.time() - start_time:.2f} seconds")
     
-    return scores.mean(), scores.std(), top_indices, X_reduced
+    return scores.mean(), scores.std(), top_ica_indices, X_ica_top
 
 # Method 4: Feature selection using Feature Agglomeration
 def method_feature_agglom(X, y):
@@ -178,11 +177,7 @@ def method_feature_agglom(X, y):
         # Feature Agglomeration - cluster features into groups
         n_clusters = num_features
         agglo = FeatureAgglomeration(n_clusters=n_clusters)
-        X_reduced = agglo.fit_transform(X)
-        
-        # For feature selection we need to determine the most representative features
-        # From each cluster, we'll select the feature closest to the cluster center
-        X_transformed = agglo.fit_transform(X)
+        agglo.fit(X)
         
         # Get the labels for each feature
         feature_labels = agglo.labels_
@@ -275,20 +270,9 @@ def method_hvgs(X, y):
     print("\nMethod 5: Feature selection using HVGS (Highly Variable Gene Selection)")
     start_time = time.time()
     
-    # Calculate coefficient of variation for each feature
-    print("Calculating coefficient of variation for each feature...")
-    feature_means = np.mean(X, axis=0)
-    feature_stds = np.std(X, axis=0)
-    
-    # To avoid division by zero, add small epsilon to mean
-    epsilon = 1e-10
-    feature_cv = feature_stds / (feature_means + epsilon)
-    
-    # Get top 30 features with highest coefficient of variation
-    top_indices = np.argsort(-feature_cv)[:30]
-    
-    # Create reduced dataset with selected features
-    X_reduced = X[:, top_indices]
+    # Apply the HVGS function to select features with highest variance
+    print("Selecting features with highest variance...")
+    X_reduced, top_indices = select_hvgs(X, n_features=30)
     
     # Display pixel positions of top features
     print("\nTop 30 features selected (pixel positions):")
@@ -338,13 +322,17 @@ def compare_results(results):
             method1 = methods[i]
             method2 = methods[j]
             
-            # Skip if either method failed
+            # Skip if either method failed or doesn't have feature indices
             if results[method1][0] == 0 or results[method2][0] == 0:
                 continue
                 
             indices1 = results[method1][2]
             indices2 = results[method2][2]
             
+            # Skip comparison if either method doesn't have indices (e.g., PCA transform)
+            if indices1 is None or indices2 is None:
+                continue
+                
             common_features = set(indices1.tolist()).intersection(set(indices2.tolist()))
             print(f"{method1} vs {method2}: {len(common_features)} common features")
 
@@ -355,11 +343,11 @@ def main():
     # Store results for all methods
     results = {}
     
-    # Method 1: Feature selection using PCA without scaling
-    results["PCA without scaling"] = method_pca_without_scaling(X, y)
+    # Method 1: PCA without scaling (NO TRANSFORM - feature selection only)
+    results["PCA without scaling (feature selection)"] = method_pca_without_scaling(X, y)
     
-    # Method 2: Feature selection using PCA with scaling
-    results["PCA with scaling"] = method_pca_with_scaling(X, y)
+    # Method 2: PCA with scaling (WITH TRANSFORM)
+    results["PCA with scaling (transform)"] = method_pca_with_scaling(X, y)
     
     # Method 3: Feature selection using ICA
     results["ICA"] = method_ica(X, y)
