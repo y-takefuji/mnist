@@ -5,7 +5,11 @@ mnisttransfpca.py
 (PCA with scaling) - Accuracy: 0.6402 (±0.0037)
 
 pcaicahvgsfa.py
-
+PCA without scaling (feature selection) 0.8376     (±0.0026)
+PCA with scaling (transform)        0.9415     (±0.0017)
+ICA                                 0.7809     (±0.0020)
+Feature Agglomeration               0.9279     (±0.0020)
+HVGS (Highly Variable Gene Selection) 0.8441     (±0.0023)
 
   
 mnist.py:
