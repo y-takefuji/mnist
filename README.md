@@ -32,10 +32,10 @@ Ranking of feature selection methods by accuracy:
 3. LASSO (with LASSO classifier) with scaling and transform: 0.7299 ± 0.0024
 
 FA-lasso-log-pca.py:
-1. Feature Agglomeration + Random Forest: 0.9279 ± 0.0020
+1. Feature Agglomeration (with RF): 0.9279 ± 0.0020
 2. LASSO features + LASSO classifier: 0.7215 ± 0.0031
 3. LogReg features + LogReg: 0.6482 ± 0.0018
-4. PCA features + Random Forest: 0.6164 ± 0.0025
+4. PCA features (with RF): 0.6164 ± 0.0025
 
 temulapca.py
 Ranking of feature selection methods by accuracy:
