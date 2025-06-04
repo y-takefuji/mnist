@@ -27,10 +27,6 @@ print(f"Original MNIST dataset shape: {X.shape}")
 # Normalize pixel values
 X = X / 255.0
 
-# Scale features
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
 # 1. LASSO-based feature selection
 print(f"\nPerforming LASSO-based feature selection for top {num_features} features...")
 start_time = time.time()
@@ -39,9 +35,9 @@ start_time = time.time()
 # Create a binary target vector: 1 if digit > 4, 0 otherwise (dividing digits into two groups)
 binary_y = (y > 4).astype(int)
 
-# Use Lasso to identify important features for this binary task
+# Use Lasso to identify important features for this binary task - no scaling
 lasso_selector = Lasso(alpha=0.01, max_iter=2000, random_state=42)
-lasso_selector.fit(X_scaled, binary_y)
+lasso_selector.fit(X, binary_y)  # Using X directly without scaling
 
 # Get feature importance from LASSO coefficients
 lasso_importance = np.abs(lasso_selector.coef_)
@@ -64,7 +60,7 @@ print(f"\nPerforming Logistic Regression-based feature selection for top {num_fe
 start_time = time.time()
 log_reg = LogisticRegression(penalty='l1', solver='liblinear', C=0.1, random_state=42, 
                              max_iter=1000, multi_class='ovr')
-log_reg.fit(X_scaled, y)
+log_reg.fit(X, y)  # Using X directly without scaling
 
 # Get feature importance from Logistic Regression coefficients
 log_reg_importance = np.max(np.abs(log_reg.coef_), axis=0)
@@ -85,6 +81,11 @@ for i in range(min(5, num_features)):
 # 3. PCA-based feature selection
 print(f"\nPerforming PCA to identify top {num_features} features...")
 start_time = time.time()
+
+# For PCA, we'll still use scaled data as it's sensitive to feature scales
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
 pca = PCA(n_components=num_features, random_state=42)
 pca.fit(X_scaled)
 
@@ -95,7 +96,7 @@ for i in range(num_features):
     pca_importance += np.abs(pca.components_[i])
 
 top_pca_indices = np.argsort(-pca_importance)[:num_features]
-X_pca_reduced = X[:, top_pca_indices]
+X_pca_reduced = X[:, top_pca_indices]  # Using original X for the final features
 print(f"PCA top features dataset shape: {X_pca_reduced.shape}")
 print(f"PCA feature selection completed in {time.time() - start_time:.2f} seconds")
 
@@ -117,11 +118,7 @@ try:
     # Feature Agglomeration - cluster features into groups
     n_clusters = num_features
     agglo = FeatureAgglomeration(n_clusters=n_clusters)
-    X_reduced = agglo.fit_transform(X)
-    
-    # For feature selection we need to determine the most representative features
-    # From each cluster, we'll select the feature closest to the cluster center
-    X_transformed = agglo.fit_transform(X)
+    agglo.fit(X)
     
     # Get the labels for each feature
     feature_labels = agglo.labels_
@@ -228,30 +225,10 @@ print(f"PCA top {num_features} features (with Random Forest) - CV Accuracy: {pca
 print(f"Cross-validation completed in {time.time() - start_time:.2f} seconds")
 
 # 4. Feature Agglomeration feature selection + Random Forest
-if agglo_available:
+if agglo_available and X_agglo_reduced is not None:
     print(f"\nCross-validating Feature Agglomeration-selected features with Random Forest...")
     start_time = time.time()
+    rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
     agglo_rf_scores = cross_val_score(rf_classifier, X_agglo_reduced, y, cv=cv, scoring='accuracy')
     print(f"Feature Agglomeration top {num_features} features (with Random Forest) - CV Accuracy: {agglo_rf_scores.mean():.4f} ± {agglo_rf_scores.std():.4f}")
     print(f"Cross-validation completed in {time.time() - start_time:.2f} seconds")
-
-# Create a summary of results
-print("\n=== SUMMARY OF FEATURE SELECTION & CLASSIFICATION METHODS ===")
-results = [
-    ("LASSO features + LASSO classifier", lasso_scores.mean(), lasso_scores.std()),
-    ("LogReg features + LogReg", logreg_scores.mean(), logreg_scores.std()),
-    ("PCA features + Random Forest", pca_rf_scores.mean(), pca_rf_scores.std()),
-]
-
-if agglo_available:
-    results.append(("Feature Agglomeration + Random Forest", agglo_rf_scores.mean(), agglo_rf_scores.std()))
-
-# Sort methods by accuracy
-results.sort(key=lambda x: x[1], reverse=True)
-
-# Print rankings
-print("\nRanking of methods by accuracy:")
-for i, (method, mean_acc, std_acc) in enumerate(results, 1):
-    print(f"{i}. {method}: {mean_acc:.4f} ± {std_acc:.4f}")
-
-print("\nAnalysis complete!")
