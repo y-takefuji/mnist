@@ -1,5 +1,11 @@
 # mnist
 <pre>
+pcahvgsfa.py
+PCA without scaling (NO TRANSFORM)  0.8395 ±0.0024
+Feature Agglomeration               0.9279 ±0.0020
+HVGS (High Variance Gene Selection) 0.8441 ±0.0023
+  
+  
 mnistpcaST.py
 Method 1 (No scaling, No transform): 0.8441±0.0023
 Method 2 (Scaling and Transform): 0.9415±0.0010
