@@ -1,8 +1,10 @@
 # mnist
 <pre>
-mnisttransfpca.py
-(PCA without scaling) - Accuracy: 0.8364 (±0.0023)
-(PCA with scaling) - Accuracy: 0.6402 (±0.0037)
+mnistpcaST.py
+Method 1 (No scaling, No transform): 0.8441±0.0023
+Method 2 (Scaling and Transform): 0.9415±0.0010
+Method 3 (No scaling and Transform): 0.9532±0.0018
+Method 4 (Scaling and No transform): 0.8442±0.0022
 
 pcaicahvgsfa.py
 PCA without scaling (feature selection) 0.8376     (±0.0026)
