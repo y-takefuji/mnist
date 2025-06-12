@@ -26,7 +26,7 @@ def load_mnist_data():
     
     return X, y
 
-# Highly Variable Gene Selection function
+# High Variance Gene Selection function
 def select_hvgs(X, n_features=30):
     """Select the top n_features with highest variance"""
     variances = np.var(X, axis=0)
@@ -265,9 +265,9 @@ def method_feature_agglom(X, y):
         print("Returning empty results.")
         return 0, 0, np.array([]), None
 
-# Method 5: Feature selection using HVGS (Highly Variable Gene Selection)
+# Method 5: Feature selection using HVGS (High Variance Gene Selection)
 def method_hvgs(X, y):
-    print("\nMethod 5: Feature selection using HVGS (Highly Variable Gene Selection)")
+    print("\nMethod 5: Feature selection using HVGS (High Variance Gene Selection)")
     start_time = time.time()
     
     # Apply the HVGS function to select features with highest variance
@@ -306,7 +306,7 @@ def compare_results(results):
     for method, (acc, std, _, _) in results.items():
         if acc == 0:  # Skip methods that failed
             continue
-        print(f"{method:<35} {acc:.4f}     (±{std:.4f})")
+        print(f"{method:<35} {acc:.4f} ±{std:.4f}")
         if acc > best_acc:
             best_acc = acc
             best_method = method
@@ -344,7 +344,7 @@ def main():
     results = {}
     
     # Method 1: PCA without scaling (NO TRANSFORM - feature selection only)
-    results["PCA without scaling (feature selection)"] = method_pca_without_scaling(X, y)
+    results["PCA without scaling (NO TRANSFORM)"] = method_pca_without_scaling(X, y)
     
     # Method 2: PCA with scaling (WITH TRANSFORM)
     results["PCA with scaling (transform)"] = method_pca_with_scaling(X, y)
@@ -356,7 +356,7 @@ def main():
     results["Feature Agglomeration"] = method_feature_agglom(X, y)
     
     # Method 5: Feature selection using HVGS
-    results["HVGS (Highly Variable Gene Selection)"] = method_hvgs(X, y)
+    results["HVGS (High Variance Gene Selection)"] = method_hvgs(X, y)
     
     # Compare results from all methods
     compare_results(results)
