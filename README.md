@@ -1,5 +1,11 @@
 # mnist
 <pre>
+pcaST.py
+Mean CV accuracy: 0.9407 ± 0.0015
+PC1
+PC2
+
+  
 pcahvgsfa.py
 PCA without scaling (NO TRANSFORM)  0.8395 ±0.0024
 Feature Agglomeration               0.9279 ±0.0020
