@@ -9,7 +9,7 @@ PC2
 pcahvgsfa.py
 PCA without scaling (NO TRANSFORM)  0.8395 ±0.0024
 Feature Agglomeration               0.9279 ±0.0020
-HVGS (High Variance Gene Selection) 0.8441 ±0.0023
+HVGS (Highly Variable Gene Selection) 0.8441 ±0.0023
   
   
 mnistpcaST.py
