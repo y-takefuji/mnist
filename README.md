@@ -1,5 +1,8 @@
 # mnist
 <pre>
+ap.py (affinity propagation)
+Mean accuracy: 0.8875 ± 0.0059
+  
 pcaST.py
 Mean CV accuracy: 0.9407 ± 0.0015
 PC1
