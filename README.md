@@ -1,5 +1,12 @@
 # mnist
 <pre>
+mniststability.py
+RF: 0.8861 ± 0.0025: unstable
+XGBoost: 0.8172 ± 0.0034: unstable
+feature agglomeration: 0.8368 ± 0.0021: stable
+highly variable gene selection: 0.8441 ± 0.0023: stable
+Spearman: 0.5196 ± 0.003: stable
+
 ap.py (affinity propagation)
 Mean accuracy: 0.8875 ± 0.0059
   
